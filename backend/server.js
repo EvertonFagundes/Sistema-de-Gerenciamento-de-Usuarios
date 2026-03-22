@@ -1,3 +1,6 @@
+//importar o banco de dados
+const db = require("./database");
+
 // importar o express
 const express = require("express");
 
@@ -6,8 +9,6 @@ const app = express();
 
 // definir porta
 const PORT = 3000;
-
-let users = [];
 
 app.use(express.json());
 
@@ -23,74 +24,108 @@ app.listen(PORT, () => {
 
 //lista usuários
 app.get("/users", (req, res) => {
-    // res.send("Lista de usuários")
-    res.json(users);
+    db.all(
+        "SELECT * FROM users",
+        [],
+        (err, rows) => {
+            if(err){
+                console.log(err);
+                return res.json({ erro: "Erro ao buscar usuários"});
+            }
+            res.json(rows)
+        }
+    );
 });
 
 //lista um usuário específico
 app.get("/users/:id", (req, res) => {
-    let id = req.params.id;
-    id = parseInt(id);
-
-    let indiceUser = users.findIndex(user => user.id === id);
-
-    if(indiceUser === -1){
-        return res.json({ mensagem: "Id do usuário inválido!"});
-    }
-
-    res.json(users[indiceUser]);
+    const id = req.params.id;
+    db.get(
+        "SELECT * FROM users WHERE id = ?",
+        [id],
+        function (err, row){
+            if(err){
+                console.log(err);
+                return res.json({ erro: "Erro ao pegar usuario com o id ", id });
+            }
+            if(!row){
+                return res.json({ 
+                    mensagem: "Usuário não encontrado"
+                 });
+            }
+            res.json(row);
+        }
+    );
 });
 
 //cria usuários
 app.post("/users", (req, res) => {
-    const dados = req.body;
-    //console.log(dados);
-    dados.id = users.length + 1;
-    users.push(dados);
+    const { nome, idade } = req.body;
+    
+    db.run(
+        "INSERT INTO users (nome, idade) VALUES (?, ?)",
+        [nome, idade],
+        function(err){
+            if(err){
+                console.log(err);
+                return res.json({ erro: "Erro ao criar usuário" });
+            }
 
-    res.send("Usuário recebido");
+            res.json({
+                mensagem: "Usuário criado com sucesso!",
+                usuario: {
+                    id: this.lastID,
+                    nome: nome,
+                    idade: idade
+                }
+            });
+        }
+    );
+
 });
 
+//atualiza um usuário específico
 app.put("/users/:id", (req, res) => {
     let id = req.params.id;
     id = parseInt(id);
 
-    const dados = req.body;
+    const { nome, idade } = req.body;
 
-    //encontrar índice do usuário
-    let indiceUser = users.findIndex(user => user.id === id);
-
-    //se não encontrou
-    if(indiceUser === -1){
-        return res.send("Id de usuário inválido");
-    }
-
-    //manter o id
-    dados.id = id;
-
-    //atualizar usuário
-    users[indiceUser] = dados;
-    
-    res.send(`Usário ${id} atualizado`);
+    db.run(
+        "UPDATE users SET nome = ?, idade = ? WHERE id = ?",
+        [nome, idade, id],
+        function(err){
+            if(err){
+                console.log(err);
+                return res.json({ erro: "Erro ao atualizar usuário" })
+            }
+            if(this.changes === 0){
+                return res.json({ erro: "Id de usuário inválido" });
+            }
+            res.json({ mensagem: `Usuário ${id} atualizado com sucesso!` });
+        }
+    );
 });
 
+//Deleta um usuário específico
 app.delete("/users/:id", (req, res) => {
     //pegar id da URL
     let id = req.params.id;
-
     //Converter para número
     id = parseInt(id);
-
-    //encontrar indíce com o findIndex()
-    let indiceUser = users.findIndex(user => user.id === id);
-
-    //verificar se existe
-    if(indiceUser === -1){
-        return res.send("Id de usuário inválido!");
-    }
-
-    //remover do array
-    users.splice(indiceUser, 1);
-
-    res.send(`Usuário ${id} deletado`);
+    
+    db.run(
+        "DELETE FROM users WHERE id = ?",
+        [id],
+        function(err){
+            if(err){
+                console.log(err);
+                return res.json({ erro: "Erro ao deletar o usuário" });
+            }
+            if(this.changes === 0){
+                return res.json({ erro: "Id de usuário inválido" });
+            }
+            res.json({ mensagem: `Usuário com o id ${id} foi deletado!` });
+        }
+    );
 });
