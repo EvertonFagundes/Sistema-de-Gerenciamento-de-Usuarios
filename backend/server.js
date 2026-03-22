@@ -4,6 +4,9 @@ const db = require("./database");
 // importar o express
 const express = require("express");
 
+//importar o bcrypt para criptografar a senha do usuário
+const bcrypt = require("bcrypt");
+
 // criar aplicação
 const app = express();
 
@@ -32,7 +35,16 @@ app.get("/users", (req, res) => {
                 console.log(err);
                 return res.json({ erro: "Erro ao buscar usuários"});
             }
-            res.json(rows)
+            //remover senha da response
+            const usuarioSemSenha = rows.map(user => {
+                return{
+                    id: user.id,
+                    nome: user.nome,
+                    data_nascimento: user.data_nascimento,
+                    email: user.email
+                };
+            });
+            res.json(usuarioSemSenha)
         }
     );
 });
@@ -53,18 +65,31 @@ app.get("/users/:id", (req, res) => {
                     mensagem: "Usuário não encontrado"
                  });
             }
-            res.json(row);
+
+            //remover senha da response
+            const usuarioSemSenha = {
+                id: row.id,
+                nome: row.nome,
+                data_nascimento: row.data_nascimento,
+                email: row.email
+            }
+            res.json(usuarioSemSenha);
         }
     );
 });
 
 //cria usuários
-app.post("/users", (req, res) => {
-    const { nome, idade } = req.body;
+app.post("/users", async (req, res) => {
+
+    const { nome, data_nascimento, email, senha } = req.body;
     
-    db.run(
-        "INSERT INTO users (nome, idade) VALUES (?, ?)",
-        [nome, idade],
+    try{
+        //criptografar a senha
+        const senhaCriptografada = await bcrypt.hash(senha, 12);
+
+        db.run(
+        "INSERT INTO users (nome, data_nascimento, email, senha) VALUES (?, ?, ?, ?)",
+        [nome, data_nascimento, email, senhaCriptografada],
         function(err){
             if(err){
                 console.log(err);
@@ -76,35 +101,66 @@ app.post("/users", (req, res) => {
                 usuario: {
                     id: this.lastID,
                     nome: nome,
-                    idade: idade
+                    data_nascimento: data_nascimento,
+                    email: email
                 }
             });
         }
     );
+    }catch(erro){
+        console.log(erro);
+        res.json({ 
+            erro: "Erro ao salvar usuário"
+         })
+
+    }
+
+    
 
 });
 
 //atualiza um usuário específico
-app.put("/users/:id", (req, res) => {
+app.put("/users/:id", async (req, res) => {
     let id = req.params.id;
     id = parseInt(id);
 
-    const { nome, idade } = req.body;
+    const { nome, data_nascimento, email, senha } = req.body;
 
-    db.run(
-        "UPDATE users SET nome = ?, idade = ? WHERE id = ?",
-        [nome, idade, id],
-        function(err){
-            if(err){
-                console.log(err);
-                return res.json({ erro: "Erro ao atualizar usuário" })
-            }
-            if(this.changes === 0){
-                return res.json({ erro: "Id de usuário inválido" });
-            }
-            res.json({ mensagem: `Usuário ${id} atualizado com sucesso!` });
+    try{
+        let senhaCriptografada = null;
+
+        //Se enviou senha => criptografa
+        if(senha){
+            senhaCriptografada = await bcrypt.hash(senha, 12);
         }
-    );
+
+        db.run(
+            "UPDATE users SET nome = ?, data_nascimento = ?, email = ?, senha = COALESCE(?,senha) WHERE id = ?",
+            [nome, data_nascimento, email, senhaCriptografada, id],
+            function(err){
+                if(err){
+                    console.log(err);
+                    return res.json({ erro: "Erro ao atualizar usuário" })
+                }
+                if(this.changes === 0){
+                    return res.json({ erro: "Id de usuário inválido" });
+                }
+                res.json({ 
+                    mensagem: `Usuário ${id} atualizado com sucesso!`,
+                    usuario: {
+                        id: id,
+                        nome: nome,
+                        data_nascimento: data_nascimento,
+                        email: email
+                    }
+                });
+            }
+        );
+    }catch(erro){
+
+    }
+
+    
 });
 
 //Deleta um usuário específico
