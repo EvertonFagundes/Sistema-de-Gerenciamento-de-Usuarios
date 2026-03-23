@@ -22,7 +22,10 @@ const app = express();
 // definir porta
 const PORT = 3000;
 
+const cors = require("cors");
+
 app.use(express.json());
+app.use(cors());
 
 function verificarToken(req, res, next){
     const authHeader = req.headers["authorization"];
@@ -127,7 +130,13 @@ app.post("/users", async (req, res) => {
         function(err){
             if(err){
                 console.log(err);
-                return res.json({ erro: "Erro ao criar usuário" });
+
+            if(err.code === "SQLITE_CONSTRAINT"){
+                return res.json({
+                    erro: "Email já cadastrado"
+                });
+            }
+            return res.json({ erro: "Erro ao criar usuário" });
             }
 
             res.json({
@@ -148,9 +157,6 @@ app.post("/users", async (req, res) => {
          })
 
     }
-
-    
-
 });
 
 //atualiza um usuário específico
