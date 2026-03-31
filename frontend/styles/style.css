@@ -1,5 +1,39 @@
+@import url('navbar.css');
+
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+.titulo{
+    text-align: center;
+}
+
+#titulo-index{
+    margin-top: 1%;
+}
+
+.container{
+    display: flex;
+}
+
+#container-fazerLogin{
+    justify-content: center;
+    height: 50vh;
+    background-color: #023059;
+    width: 30%;
+    margin: auto;
+    border-radius: 8px;
+}
+
+#container-fazerLogin a{
+    font-size: 30px;
+    display: block;
+}
+
+@media(max-width: 575px){
+    #ul-2{
+        /* display: none; */
+    }
 }

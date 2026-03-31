@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "http://localhost:3000"; 
 
 //Salva token
 function salvarToken(token){
@@ -85,7 +85,57 @@ async function cadastrarUsuario(event){
         console.log(erro);
         alert("Erro ao conectar com servidor");
     }
+}
 
+async function carregarListaUsuarios(){
+    try{
+        const resposta = await fetch(`${API_URL}/users`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nome,
+                data_nascimento,
+                email,
+                senha
+            })
+        });
+
+        const dados = await resposta.json();
+
+        console.log("dados", dados);
+
+    }catch(erro){
+
+    }
+    const ulListaUsuarios = document.getElementById("lista-usuarios");
+    const liLista = document.createElement("li");
+    ulListaUsuarios.appendChild(liLista);
+    const idListaUsuarios = document.createElement("p");
+    liLista.appendChild(idListaUsuarios);
+    const nomeUsuarioLista = document.createElement("p");
+    liLista.appendChild(nomeUsuarioLista);
 
 
 }
+
+let controleMenu = 0;
+
+const menuHamburguer = document.getElementById("menuHamburguer");
+const ul2 = document.getElementById("ul-2");
+
+if(controleMenu == 0){
+    ul2.style.display = "none";
+}
+
+menuHamburguer.addEventListener("click", (event)=>{
+    event.preventDefault();
+    if(controleMenu == 0){
+        controleMenu = 1;
+        ul2.style.display = "flex";
+    }else if(controleMenu == 1){
+        controleMenu = 0;
+        ul2.style.display = "none";
+    }
+});

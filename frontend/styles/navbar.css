@@ -1,0 +1,50 @@
+*{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+}
+
+.navbar{
+    background-color: #0388A6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 130px;
+    flex-direction: column;
+}
+
+.navbar ul{
+    display: flex;
+    justify-content: space-around;
+}
+
+#ul-1{
+    font-size: 30px;
+    margin-left: 1%;
+}
+
+#ul-2{
+    gap: 10px;
+    margin-right: 1%;
+}
+
+.navbar li{
+    list-style: none;
+    /* text-decoration: none; */
+}
+
+.navbar a{
+    list-style: none;
+    text-decoration: none;
+    color: black;
+}
+
+#menuHamburguer{
+    width: 50px;
+    text-align: center;
+    background: none;
+    border: none;
+}
+
+#menuHamburguer img{
+    width: 50px;
+}
