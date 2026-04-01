@@ -1,9 +1,11 @@
 @import url('navbar.css');
+@import url('login.css');
 
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    text-decoration: none;
 }
 
 .titulo{
@@ -11,7 +13,8 @@
 }
 
 #titulo-index{
-    margin-top: 1%;
+    margin-top: 2%;
+    margin-bottom: 2%;
 }
 
 .container{
@@ -19,21 +22,29 @@
 }
 
 #container-fazerLogin{
+    display: flex;
     justify-content: center;
-    height: 50vh;
+    flex-direction: column;
+    height: 25vh;
     background-color: #023059;
-    width: 30%;
+    width: 50%;
     margin: auto;
     border-radius: 8px;
+    margin-top: 5%;
+    text-align: center;
+    color: white;
 }
 
 #container-fazerLogin a{
     font-size: 30px;
     display: block;
+    color: white;
+}
+
+#container-fazerLogin p{
+    display: block;
 }
 
 @media(max-width: 575px){
-    #ul-2{
-        /* display: none; */
-    }
+    
 }

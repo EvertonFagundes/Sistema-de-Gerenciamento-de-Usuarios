@@ -120,10 +120,13 @@ async function carregarListaUsuarios(){
 
 }
 
+//criando lógica para menu Hambúrguer
 let controleMenu = 0;
 
 const menuHamburguer = document.getElementById("menuHamburguer");
 const ul2 = document.getElementById("ul-2");
+const inconeX = document.getElementById("iconeX");
+const imgHamburguer = document.getElementById("imgHamburguer");
 
 if(controleMenu == 0){
     ul2.style.display = "none";
@@ -133,9 +136,13 @@ menuHamburguer.addEventListener("click", (event)=>{
     event.preventDefault();
     if(controleMenu == 0){
         controleMenu = 1;
+        imgHamburguer.style.display = "none";
+        inconeX.style.display = "block";
         ul2.style.display = "flex";
     }else if(controleMenu == 1){
         controleMenu = 0;
+        inconeX.style.display = "none";
+        imgHamburguer.style.display = "block";
         ul2.style.display = "none";
     }
 });

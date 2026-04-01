@@ -7,16 +7,10 @@
     <title>Sistema de Gerenciamento de Usuários</title>
 </head>
 <body>
-    <!-- <header>
-        <nav>
-            <ul>
-                <li>a</li>
-                <li>b</li>
-                <li>c</li>
-            </ul>
-        </nav>
-    </header> -->
-    <h1>Área de login</h1>
+    <header>
+        <nav class="navbar"></nav>
+    </header>
+    <h1 class="titulo" id="titulo-login">Área de login</h1>
     <main>
         <div id="container-login">
             <form onsubmit="login(event)">
@@ -24,16 +18,14 @@
                 <input type="email" name="email" id="email" required>
                 <label for="senha">Senha:</label>
                 <input type="password" name="senha" id="senha" required>
-                <button type="submit" name="btn-entrar">entrar</button>
+                <button type="submit" name="btn-entrar" id="btn-entrar">entrar</button>
             </form>
             <span>
                 <a href="./cadastro.html">Não possui conta? Cadastre-se aqui!</a>
             </span>
         </div>
     </main>
-
-
-
+    <script src="../scripts/navbar.js"></script>
     <script src="../scripts/script.js"></script>
 </body>
 </html>

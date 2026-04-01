@@ -1,0 +1,35 @@
+#container-login{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: #03658C;
+    width: 85%;
+    text-align: center;
+    margin: auto;
+    border-radius: 10px;
+    align-items: center;
+    padding: 5px;
+}
+
+#container-login input{
+    display: block;
+    margin: auto;
+    border-radius: 8px;
+}
+
+#container-login span > a{
+    color: white;
+}
+
+#titulo-login{
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+#btn-entrar{
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #04ADBF;
+    margin-top: 1%;
+    margin-bottom: 5%;
+}

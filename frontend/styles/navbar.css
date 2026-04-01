@@ -45,6 +45,11 @@
     border: none;
 }
 
-#menuHamburguer img{
+#menuHamburguer #imgHamburguer{
     width: 50px;
+}
+
+#menuHamburguer #iconeX{
+    width: 50px;
+    display: none;
 }
